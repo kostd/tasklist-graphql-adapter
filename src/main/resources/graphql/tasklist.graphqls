@@ -1,0 +1,67 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+type Query{
+    myOpenedTasks: [Task]!
+    # TODO: вместо String хорошо бы использовать кастомный тип Date.
+    myClosedTasks(day: String!): [Task]!
+    myNotifications: [Notification]
+
+
+}
+type Mutation{
+    addTaskComment(taskInstanceId: ID! text: String, important: Boolean): Comment
+    completeTask(taskInstanceId: ID!, closeCodeId: ID!): Task
+    readNotification(notificationId: ID!): String
+}
+
+type Task {
+    #TODO: frontend ожидает, что id это число
+    id: String!
+    name: String!
+    desc: String
+    processTypeName: String
+    taskType: String
+    dueDate: String
+    address: String
+    addressComment: String
+    createDate: String
+    closeDate:String
+    isClosed: Boolean
+    latitude: String
+    longitude: String
+    comment: String
+    scheduledDate : String
+    attrs: [Attribute]
+    #TODO: в реальном мире тут Worker
+    assignee: [String]
+}
+
+type Attribute{
+    key: String
+    value: String
+}
+
+
+type Notification {
+    id: ID!
+    time: String
+    date: String
+    text: String
+    taskId: ID
+    """ Прочитано (то есть доставлено) """
+    delivered: Boolean
+    task: Task
+
+}
+
+type Comment{
+    who: String!
+    title: String!
+    text: String!
+    date: String!
+    taskId: ID!
+    type: String!
+    important: Boolean!
+}
