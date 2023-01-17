@@ -3,6 +3,7 @@ package org.kostd.bpms.tasklist.graphql
 import com.google.common.base.Preconditions
 import org.kostd.bpms.tasklist.rest.CamundaTaskClient
 import org.kostd.bpms.tasklistgraphqladapter.auth.CurrentPrincipal
+import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.security.core.userdetails.UserDetails
@@ -28,7 +29,7 @@ class TaskListController {
     }
 
     @QueryMapping
-    fun myClosedTasks(day: String): List<TaskDto> {
+    fun myClosedTasks(@Argument day: String): List<TaskDto> {
         val userPrincipal: UserDetails = currentPrincipal.get();
         Preconditions.checkState(userPrincipal.username != null);
         // #TODO: paging (listPage)
@@ -43,13 +44,13 @@ class TaskListController {
 
     }
 
-    @QueryMapping
-    fun addTaskComment(taskInstanceId: Long, text: String, important: Boolean): CommentDto {
+    @MutationMapping
+    fun addTaskComment(@Argument taskInstanceId: String, @Argument text: String, @Argument important: Boolean): CommentDto {
         return camundaTaskClient.addComment(taskInstanceId, text);
     }
 
-    @QueryMapping
-    fun completeTask(taskInstanceId: Long, closeCodeId: Long): TaskDto {
+    @MutationMapping
+    fun completeTask(@Argument taskInstanceId: String, @Argument closeCodeId: Long): TaskDto {
         return camundaTaskClient.complete(taskInstanceId, closeCodeId);
     }
 
